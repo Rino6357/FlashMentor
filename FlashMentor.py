@@ -9,7 +9,10 @@ from kivy.uix.popup import Popup
 import random
 
 Storage = {
-
+    '1':'11',
+    '2':'22',
+    '3':'33',
+    '4':'44'
 }
 flashCard = ''
 
@@ -64,20 +67,23 @@ class HomeScreen(Screen):
         self.add_widget(bottom)
 
     def go_to_second_screen(self, instance):
-        self.manager.current = 'second_screen'
         amtOfCards = len(Storage)
         if amtOfCards > 0:
             global flashCard
             flashCard = random.choice(list(Storage.keys()))
             self.manager.get_screen('second_screen').update_answer_options()
+            self.manager.current = 'second_screen'
+        else:
+            self.show_popup('Not enough flashcards!')
+
 
     def on_add_pressed(self, word, definition):
         Storage[word] = definition
-        self.show_popup()
+        self.show_popup("Word added!")
         print(Storage)
     
-    def show_popup(self):
-        content = Label(text="Word added")
+    def show_popup(self, text):
+        content = Label(text=f"{text}")
         popup = Popup(title="", content=content, size_hint=(None, None), size=(300, 200))
         popup.bind(on_touch_down=popup.dismiss)
         popup.open()
@@ -91,36 +97,43 @@ class SecondScreen(Screen):
         
         self.flashCardBox = Label(
             text='',
-            size_hint=(1, 0.7)
+            font_size='50sp',
+            size_hint=(1, 3.5)
         )
+        self.placeHolder = Label(
+            text=''
+        )
+
         self.answer_options = []
+        self.height = 230
 
         self.choice1 = Button(
             text='',
             on_press=lambda instance: self.check_answer(instance.text),
             size_hint_y=None,
-            height=200
+            height=self.height
         )
         self.choice2 = Button(
             text='',
             on_press=lambda instance: self.check_answer(instance.text),
             size_hint_y=None,
-            height=200
+            height=self.height
         )
         self.choice3 = Button(
             text='',
             on_press=lambda instance: self.check_answer(instance.text),
             size_hint_y=None,
-            height=200
+            height=self.height
         )
         self.choice4 = Button(
             text='',
             on_press=lambda instance: self.check_answer(instance.text),
             size_hint_y=None,
-            height=200
+            height=self.height
         )
 
         topSecond.add_widget(self.flashCardBox)
+        topSecond.add_widget(self.placeHolder)
         bottomSecond.add_widget(self.choice1)
         bottomSecond.add_widget(self.choice2)
         bottomSecond.add_widget(self.choice3)
